@@ -1,0 +1,53 @@
+
+html,
+body{
+    min-width:100%;
+    min-height:100%;
+    margin:0;
+}
+
+body *{
+    position:relative;
+}
+
+.bouncyBall {
+	position:fixed;
+	background-color:red;
+	height:100px;
+	width:100px;
+	left:300px;
+	top:45%;
+	border-radius: 50%;
+	animation: bounce 1.5s infinite;
+	-webkit-animation: bounce 1.5s infinite;
+	-moz-animation: bounce 1.5s infinite;
+	-webkitten-animation: 2 red kitten 2 green kitten n-1 transparent kitten;
+}
+
+.bouncyBall:hover {
+	animation:none;
+	-webkit-animation:none;
+	-moz-animation:none;
+}
+
+@keyframes bounce {
+	0%	{top: 45%; left: 300px; width: 100px; height: 100px; }
+	40%	{left: 300px; width: 100px; height: 100px; }
+	50%	{top: 85%; left: 292px; width: 115px; height: 90px; }
+	60%	{left: 300px; width: 100px; height: 100px; }
+	100%{top: 45%; width: 100px; height: 100px; }
+}
+@-webkit-keyframes bounce {
+	0%	{top: 45%; left: 300px; width: 100px; height: 100px; }
+	40%	{left: 300px; width: 100px; height: 100px; }
+	50%	{top: 85%; left: 292px; width: 115px; height: 90px; }
+	60%	{left: 300px; width: 100px; height: 100px; }
+	100%{top: 45%; width: 100px; height: 100px; }
+}
+@-moz-keyframes bounce {
+	0%	{top: 45%; left: 300px; width: 100px; height: 100px; }
+	40%	{left: 300px; width: 100px; height: 100px; }
+	50%	{top: 85%; left: 292px; width: 115px; height: 90px; }
+	60%	{left: 300px; width: 100px; height: 100px; }
+	100%{top: 45%; width: 100px; height: 100px; }
+}
