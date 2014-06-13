@@ -12,6 +12,7 @@
   <div id="ctrl2">
   <div id="ctrl3">
   <div id="ctrl4">
+  <audio src="audio.ogg" preload="auto" controls></audio>
 </body>
 
 </html>

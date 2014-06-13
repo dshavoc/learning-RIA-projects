@@ -1,0 +1,55 @@
+
+html,
+body{
+    min-width:100%;
+    min-height:100%;
+    margin:0;
+}
+
+body *{
+    position:relative;
+}
+
+.ctrl {
+  position:fixed;
+	background-color:red;
+	border-radius: 50%;
+}
+
+.ball {
+	position:fixed;
+	background-color:red;
+	height:100px;
+	width:100px;
+	left:300px;
+	top:45%;
+	border-radius: 50%;
+}
+
+.bouncy {
+	animation: bounce 1.5s infinite;
+	-webkit-animation: bounce 1.5s infinite;
+	-moz-animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+	0%	{top: 45%; left: 300px; width: 100px; height: 100px; }
+	40%	{left: 300px; width: 100px; height: 100px; }
+	50%	{top: 85%; left: 292px; width: 115px; height: 90px; }
+	60%	{left: 300px; width: 100px; height: 100px; }
+	100%{top: 45%; width: 100px; height: 100px; }
+}
+@-webkit-keyframes bounce {
+	0%	{top: 45%; left: 300px; width: 100px; height: 100px; }
+	40%	{left: 300px; width: 100px; height: 100px; }
+	50%	{top: 85%; left: 292px; width: 115px; height: 90px; }
+	60%	{left: 300px; width: 100px; height: 100px; }
+	100%{top: 45%; width: 100px; height: 100px; }
+}
+@-moz-keyframes bounce {
+	0%	{top: 45%; left: 300px; width: 100px; height: 100px; }
+	40%	{left: 300px; width: 100px; height: 100px; }
+	50%	{top: 85%; left: 292px; width: 115px; height: 90px; }
+	60%	{left: 300px; width: 100px; height: 100px; }
+	100%{top: 45%; width: 100px; height: 100px; }
+}
