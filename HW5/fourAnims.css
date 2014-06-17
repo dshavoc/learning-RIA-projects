@@ -7,37 +7,58 @@ body {
 
 body * {
   position: relative;
+  opacity:1;
+  transition: opacity 400ms 400ms;
 }
 
-.bloop {
-  position: fixed;
-  background-color: red;
-  top:  25%;
-  left: 5%;
-  width: 8%;
-  height: 25%;
-  transition: height 1s, top 1s, width 1s 0.5s;
+.hidden {
+  opacity:0;
 }
-.bloop-end {
-  top: 85%;
-  height: 8%;
-  width: 25%;
+
+.menu {
+  position: fixed;
+  background-color: lightblue;
+  top:0px;
+  left:0px;
+  width:100px;
+  height:50px;
+  font-size:18px;
+  text-align:center;
+  padding:4px;
+
+  transition: height 300ms, width 200ms 200ms, font-size 500ms;
+}
+.menu-open {
+  width:900px;
+  height:600px;
+  font-size: 12px;
+}
+
+.action {
+	background-color:yellow;
+	height:40px;
+	width:50px;
+	left:816px;
+	top:10px;
+	text-align:center;
+	padding-top:5px;
+	padding-bottom:5px;
+	border-radius:4px;
+  transform:rotate(10deg);
+  transition:transform 1s, opacity 400ms 400ms;
 }
 
 .ninja {
-	position:fixed;
-	background-color:gray;
-	height:50px;
-	width:50px;
-	left:30%;
-	top:25%;
-  transform: skew(10deg, 10deg);
+  animation: dodge 1s infinite;
+	-webkit-animation: dodge 1s infinite;
+	-moz-animation: dodge 1s infinite;
 }
 
-.ninja-end {
-  top:75%;
-  
+@keyframes dodge {
+	0%	{top:10px;transform:rotate(500deg);}
+	100%{top:540px;}
 }
+
 
 .sun {
   position: fixed;

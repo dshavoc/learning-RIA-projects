@@ -4,11 +4,11 @@ window.onload = function(e) {
 }
 
 function init() {
-	var ninja = document.getElementById('ninja');
-	ninja.classList.add('ninja');
+	var menu = document.getElementById('menu');
+	menu.classList.add('menu');
 	
-	var bloop = document.getElementById('bloop');
-	bloop.classList.add('bloop');
+	var action = document.getElementById('action');
+	action.classList.add('action', 'hidden');
 	
 	var traveler = document.getElementById('traveler');
 	traveler.classList.add('traveler');
@@ -18,19 +18,41 @@ function init() {
 }
 
 function bindEvents(e) {
-	var bloop = document.getElementById('bloop');
-	var ninja = document.getElementById('ninja');
+	var menu = document.getElementById('menu');
+	var action = document.getElementById('action');
 	var traveler = document.getElementById('traveler');
 	var satellite = document.getElementById('satellite');
+	var vid = document.querySelector('video');
+  //To fulfill looping requirement
+  var divs = document.querySelectorAll('div');
 	
-	bloop.addEventListener('click',
+	menu.addEventListener('click',
 	  function(e) {
-	    bloop.classList.toggle('bloop-end');
+	    //Menu closing
+ 	    if(menu.classList.contains('menu-open')) {
+ 	      action.classList.remove('ninja');
+ 	    }
+      //Make all divs after the first one visible
+      //(The first div is the menu and is never hidden)
+      for(var i=1; i < divs.length; i++) {
+ 	      divs[i].classList.toggle('hidden');
+ 	    }
+ 	    vid.classList.toggle('hidden');
+ 	    menu.classList.toggle('menu-open');
 	  }
 	);
-	ninja.addEventListener('click',
+	
+
+	action.addEventListener('click',
 	  function(e) {
-	    bloop.classList.toggle('bloop-end');
+	    action.classList.toggle('ninja');
+	    if(action.classList.contains('ninja')) {
+	      //This has become the elusive Stop button
+	      action.innerHTML='Stop';
+	    }
+	    else {
+	      action.innerHTML='Play';
+	    }
 	  }
 	);
 }
