@@ -9,15 +9,15 @@
 
 <body>
   <div id="menu">
-    <p>Video</p>
-    <video src="http://v2v.cc/~j/theora_testsuite/320x240.ogg" controls>
+    <p>Media</p>
+    <video class="hidden">
       Your browser does not support the <code>video</code> element.
     </video>
+    <audio> </audio>
   </div>
   <div id="action" class="hidden">Play</div>
-  <div id="traveler" class="hidden">
-    <div id="satellite" class="hidden"> </div>
-  </div>
+  <div id="volUp" class="hidden"> </div>
+  <div id="volDn" class="hidden"> </div>
 </body>
 
 </html>

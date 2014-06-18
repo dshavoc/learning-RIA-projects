@@ -34,24 +34,35 @@ body * {
   font-size: 12px;
 }
 
-.action {
-	background-color:yellow;
+.control {
+  background-color:yellow;
 	height:40px;
 	width:50px;
-	left:816px;
-	top:10px;
 	text-align:center;
 	padding-top:5px;
 	padding-bottom:5px;
 	border-radius:4px;
   transform:rotate(10deg);
-  transition:transform 1s;
+  transition:transform 1s, opacity 400ms 400ms, top 200ms;
+}
+
+.action {
+	left:816px;
+	top:10px;
 }
 
 .ninja {
   animation: dodge 1s infinite;
 	-webkit-animation: dodge 1s infinite;
 	-moz-animation: dodge 1s infinite;
+}
+
+.moveUp {
+  top: -15px;
+}
+
+.moveDn {
+  top: 15px;
 }
 
 @keyframes dodge {
@@ -64,17 +75,6 @@ body * {
   position: fixed;
 }
 
-.satellite {
-  top:-10px;    left:-10px;
-  height:10px;  width:10px;
-  
-  border-radius:5px; background:#FF0;
-  position:relative;
-   line-height:100px;
-transform-style:preserve-3d;
-animation-name:moon;
-animation-duration:1s;
-animation-iteration-count:infinite;
-animation-timing-function:linear;
-transform-origin:25px 25px;
+.floatUp {
+
 }
