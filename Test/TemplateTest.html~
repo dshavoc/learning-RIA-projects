@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <script src="TemplateTest.js"></script>
+        <link rel="stylesheet" href="cards.css" />
+        <title>Deck of Cards</title>
+    </head>
+
+    <body>
+    <div class='card'>
+        <p class='card-title'>${title}</p>
+        <p class='card-class'>${class}</p>
+        <img class='card-image' src='test.png'>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,46 @@
+html,
+body {
+  min-height: 100%;
+  min-width: 100%;
+  margin: 0;
+}
+
+body * {
+    position: relative;
+    opacity:1;
+}
+
+div.card {
+    position:relative;
+    width:250px;
+    height:400px;
+    border-radius:10px;
+    background-color:brown;
+    border: 2px solid black;
+}
+
+.card-title {
+    left: 5%;
+    top: 0px;
+    width: 88%;
+    height: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    text-align:center;
+}
+
+.card-class {
+    left: 5%;
+    top: 0px;
+    width: 88%;
+    height: 20px;
+    border: 2px solid black;
+    border-radius: 10px;
+    text-align:center;
+}
+
+.card-image {
+    top:0px;
+    width:100%;
+    
+}

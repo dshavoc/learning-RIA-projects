@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <script src="http://192.168.1.168:10001/socket.io/socket.io.js"></script>
+        <script src='chat-client.js'></script>
+        <link rel='stylesheet' href='chat.css' />
+    </head>
+
+    <body>
+        <div id='main'>
+            <form id='loginForm'>
+                <fieldset>
+                    <legend id='legend'>Login</legend>
+                    <label for='username'>Username:</label>
+                    <input type='text' name='username' id='username' />
+                    <button id='login'>Log In</button>
+                </fieldset>
+            </form>
+            <section class='hidden' id='chatRoom'>
+                <textarea id='message'></textarea>
+                <button type='button' id='send'>Send</button>
+                <br>
+                <div id='messages'></div>
+            </section>
+        </div>
+    </body>
+
+</html>
