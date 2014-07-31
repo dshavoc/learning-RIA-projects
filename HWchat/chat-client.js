@@ -61,8 +61,12 @@ function serverListener() {
     function decode(msg) {
         if(msg.contains('blue')) {
             document.getElementById('messages').style =
-                'background-color:cornflowerblue;'
+                'background-color:cornflowerblue;';
+        } else if(msg.contains('white')) {
+            document.getElementById('messages').style =
+                'background-color:white;';
         }
+        
         
         //Special character sequences (smileys)
         msg = msg.replace(':)', '<img src="img/Happyface.jpg">');

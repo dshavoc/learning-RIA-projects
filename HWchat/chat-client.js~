@@ -44,7 +44,7 @@ function serverListener() {
                 theMessage = ' : ' + data.message;
             }
             else {
-                theMessage = '> ' + data.username + ' says : ' + data.message;
+                theMessage = '> ' + data.username + ': ' + data.message;
             }
             
             //Convert keywords to html img tags
