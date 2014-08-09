@@ -37,32 +37,25 @@ window.onload = function() {	//waits for entire code to be downloaded
 function serverListener() {
 
     socket.on(
-        'message',
+        'chat',
         function(data) {
-            var theMessage;
+            var msg = decode(data.msg);
             if(data.username == lastSpeaker) {
-                theMessage = ' : ' + data.message;
+                msg = ' : ' + msg;
             }
             else {
-                theMessage = '> ' + data.username + ': ' + data.message;
+                msg = '> ' + data.username + ': ' + msg;
             }
-            
-            //Convert keywords to html img tags
-            theMessage = decode(theMessage);
 
             document.getElementById('messages').innerHTML = (
-                theMessage + '<br>' + document.getElementById('messages').innerHTML
+                msg + '<br>' + document.getElementById('messages').innerHTML
             );
         
             lastSpeaker = data.username;
         }
     );
 
-    function decode(msg) {
-        if(msg.contains('blue')) {
-            document.getElementById('messages').style =
-                'background-color:cornflowerblue;'
-        }
+    function decode(msg) {        
         
         //Special character sequences (smileys)
         msg = msg.replace(':)', '<img src="img/Happyface.jpg">');

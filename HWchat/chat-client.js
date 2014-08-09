@@ -37,46 +37,37 @@ window.onload = function() {	//waits for entire code to be downloaded
 function serverListener() {
 
     socket.on(
-        'message',
+        'chat',
         function(data) {
-            var theMessage;
+            var msg = decode(data.msg);
             if(data.username == lastSpeaker) {
-                theMessage = ' : ' + data.message;
+                msg = ' : ' + msg;
             }
             else {
-                theMessage = '> ' + data.username + ': ' + data.message;
+                msg = '> ' + data.username + ': ' + msg;
             }
-            
-            //Convert keywords to html img tags
-            theMessage = decode(theMessage);
 
             document.getElementById('messages').innerHTML = (
-                theMessage + '<br>' + document.getElementById('messages').innerHTML
+                msg + '<br>' + document.getElementById('messages').innerHTML
             );
         
             lastSpeaker = data.username;
         }
     );
 
-    function decode(msg) {
-        if(msg.contains('blue')) {
-            document.getElementById('messages').style =
-                'background-color:cornflowerblue;';
-        } else if(msg.contains('white')) {
-            document.getElementById('messages').style =
-                'background-color:white;';
-        }
-        
+    function decode(msg) {        
         
         //Special character sequences (smileys)
         msg = msg.replace(':)', '<img src="img/Happyface.jpg">');
         
         //Hyperlinks
-        msg = msg.replace(/<<(.+)>>\[(.+)\]/, '<a href="$2">$1</a>');     //first
-        msg = msg.replace(/<<(.+)>>/, '<a href="$1">$1</a>');             //second
+        msg = msg.replace(/<<([^<>])>>\[([^\[\]]+)\]/,
+            '<a href="$2">$1</a>');                             //first
+        msg = msg.replace(/<<([^<>]+)>>/,
+            '<a href="$1">$1</a>');                             //second
         
         //Web images
-        msg = msg.replace(/\[(.+)\]/, '<img src="$1">');                //third
+        msg = msg.replace(/\[([^\[\]]+)\]/, '<img src="$1">');  //third
         return msg;
     }
 

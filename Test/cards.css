@@ -10,6 +10,15 @@ body * {
     opacity:1;
 }
 
+.hidden {
+    display:none;
+}
+
+.chatWindow {
+    height:400px;
+    overflow:scroll;
+}
+
 div.card {
     width:250px;
     height:400px;

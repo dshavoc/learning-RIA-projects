@@ -10,8 +10,11 @@ body * {
     opacity:1;
 }
 
+.hidden {
+    display:none;
+}
+
 div.card {
-    position:relative;
     width:250px;
     height:400px;
     border-radius:10px;
@@ -20,6 +23,7 @@ div.card {
 }
 
 .card-title {
+    position: static;
     left: 5%;
     top: 0px;
     width: 88%;
