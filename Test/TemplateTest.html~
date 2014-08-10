@@ -20,10 +20,10 @@
                     <button id='loginDM'>Log In as DM</button>
                 </fieldset>
             </form>
-            <section id='cardBoard' class='hidden'>
+            <section id='cardBoard' class='hidden cardBoard'>
 
             </section>
-            <section class='hidden' id='chatRoom'>
+            <section class='hidden chatRoom' id='chatRoom'>
                 <textarea id='message'></textarea>
                 <button type='button' id='send'>Send</button>
                 <br>

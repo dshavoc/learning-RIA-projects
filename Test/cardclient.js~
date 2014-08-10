@@ -2,6 +2,7 @@ var socket,
     username,
     lastSpeaker,
     cardTemplate,
+    deck,           //JSON Object
     DMkey;
     
 window.onload = function() {
@@ -13,6 +14,7 @@ window.onload = function() {
                             of loading another page via Post */
             
             login(io);
+            setupBoard();
         }
     );
     
@@ -25,17 +27,21 @@ window.onload = function() {
             
             login(io);
             
-            socket.emit('requestDM');
+            socket.emit('requestDM', {username: username});
+            
+            //setupBoard();   //Card data (parameters) not necessarily arrived
         }
     );
     
-    //Bind chat button
-    document.getElementById('send').addEventListener(
-        'click',
-        function(e) {
-            
-        }
-    );
+    //Chat button is bound in serverListener, after connection established
+
+    //Add test card to table (NOT HERE, because card data hasn't necessarily
+    //arrived yet from server connection...
+}
+
+function setupBoard() {
+    document.getElementById('cardBoard').innerHTML += card2html(0);
+    document.getElementById('cardBoard').innerHTML += card2html(0);
 }
 
 function login(io) {
@@ -91,13 +97,22 @@ function serverListener() {
     
     socket.on('params', function(params) {
         cardTemplate = params.cardTemplate;
-        console.log('Received card template');
+        deck = JSON.parse(params.deck);
+        console.log('Received card template and deck.');
+
+        setupBoard();   //Now that the card data has arrived
     });
     
-    socket.on('grantDM', function(msg) {    //not working
-        DMkey = msg.DMkey;
-        sysChat('You are the DM');
-        console.log('DM assigned');
+    socket.on('answerDM', function(msg) {
+        console.log(msg);
+        if(msg.isGranted == 'y') {
+            DMkey = msg.DMkey;
+            sysChat('You are the DM');
+            console.log('DM assigned');
+        }
+        else {
+            sysChat('DM seat has already been assigned to: ' + msg.DMusername);
+        }
     });
     
     document.getElementById('send').addEventListener(
@@ -130,6 +145,16 @@ function showStatus(msg) {
 
 function sysChat(msg) {
     document.getElementById('messages').innerHTML =
-        "<b>" + msg + "</b>" + document.getElementById('messages').innerHTML;
+        "<b>" + msg + "</b><br>" + document.getElementById('messages').innerHTML;
     console.log('sysChat: ' + msg);
+}
+
+function card2html(index) {
+    var cardHtml = cardTemplate;
+    cardHtml = cardHtml.replace(/\${title}/, deck.cards[index].title);
+    cardHtml = cardHtml.replace(/\${clas}/, deck.cards[index].clas);
+    cardHtml = cardHtml.replace(/\${img}/, deck.cards[index].img);
+    cardHtml = cardHtml.replace(/\${num}/, deck.cards[index].num);
+    
+    return cardHtml;
 }

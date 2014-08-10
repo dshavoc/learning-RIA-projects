@@ -14,16 +14,27 @@ body * {
     display:none;
 }
 
-div.card {
-    width:250px;
+.cardBoard {
     height:400px;
+    background-color: lightgray;
+}
+
+.chatWindow {
+    height:240px;
+    overflow:scroll;
+    background-color: lightyellow;
+}
+
+div.card {
+    width:120px;
+    height:200px;
     border-radius:10px;
-    background-color:brown;
+    background-color:tan;
     border: 2px solid black;
+    float:left;
 }
 
 .card-title {
-    position: static;
     left: 5%;
     top: 0px;
     width: 88%;

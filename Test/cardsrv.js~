@@ -3,13 +3,15 @@ var fs = require('fs');
 var io = require('socket.io').listen(10002);
 
 //Globals
-var cardTemplate;
+var cardTemplate;   //html in string
+var deck;           //JSON in string
 var DMkey = 'DM';   //preferably a random value. This value is given to the
                     //DM, and the DM must respond to the server with this
                     //to prove authority.
 var DMsocket;
+var DMusername;
 
-//Read templates
+//Read card template
 fs.readFile(
     'cardTemplate.html',
     function (err, data) {
@@ -17,6 +19,16 @@ fs.readFile(
         
         cardTemplate = data.toString();
         console.log('Imported card template');
+    }
+);
+
+//Read deck data
+fs.readFile(
+    'deck.json',
+    function (err, data) {
+        if(err) throw err;
+        
+        deck = data.toString();
     }
 );
 
@@ -29,7 +41,12 @@ io.sockets.on(
         //Bind Disconnect event
         socket.on(
             'disconnect',
-            function() { }
+            function() {
+                if(socket == DMsocket) {
+                    console.log('The DM has left!');
+                    io.emit('chat', {username: 'Sys', msg: 'The DM has left'});
+                }
+            }
         );
         
         //Bind chat message
@@ -47,23 +64,31 @@ io.sockets.on(
         socket.on(
             'requestParams',
             function() {
-                socket.emit('params', {'cardTemplate': cardTemplate});
+                socket.emit('params', {
+                    'cardTemplate': cardTemplate,
+                    'deck': deck
+                });
             }
         );
         
         //Bind DM request
         socket.on(
             'requestDM',
-            function() {
+            function(data) {
                 console.log('DM login request:');
-                console.log('  DMsocket:');
-                console.log(DMsocket);
                 if(DMsocket) {
-                    console.log('I think DM is already assigned');
+                    console.log('  Rejected');
+                    
+                    socket.emit('answerDM', 
+                        {isGranted: 'n', DMusername: DMusername}
+                    );
                 }
                 else {
-                    console.log('I think DM not yet assigned');
+                    DMusername = data.username;
+                    console.log('DM position assigned to: ' + DMusername);
                     DMsocket = socket;
+                    
+                    socket.emit('answerDM', {isGranted: 'y', DMkey: DMkey});
                 }
             }
         );
@@ -74,4 +99,6 @@ io.sockets.on(
 function cleanTransmission(data) {
     //Strip any script tags
     data = data.replace(/<script[^<]+>/ig, 'SCRIPT-TAG-BLOCKED');
+    
+    return data;
 }

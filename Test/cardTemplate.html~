@@ -1,0 +1,6 @@
+<div class='card'>
+    <p class='card-title'>${title}</p>
+    <p class='card-class'>${clas}</p>
+    <p class='card-number'>${num}</p>
+    <img class='card-image' src='${img}'>
+</div>
