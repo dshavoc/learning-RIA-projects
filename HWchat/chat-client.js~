@@ -10,12 +10,14 @@ window.onload = function() {	//waits for entire code to be downloaded
                             of loading another page via Post */
             
             //Check node server is serving socket.io
-            if(io) {
-                socket = io.connect('http://192.168.1.168:10001');
-            }
-            else {
+            if(!io) {
+                
                 document.getElementById('legend').innerHTML =
                     'Login - SERVER NOT FOUND';
+                return;
+            }
+            else {
+                socket = io.connect('http://192.168.1.168:10001');
             }
             
             //Check for socket connection
@@ -39,6 +41,7 @@ function serverListener() {
     socket.on(
         'message',
         function(data) {
+            console.log('message received');
             var theMessage;
             if(data.username == lastSpeaker) {
                 theMessage = ' : ' + data.message;
@@ -61,18 +64,23 @@ function serverListener() {
     function decode(msg) {
         if(msg.contains('blue')) {
             document.getElementById('messages').style =
-                'background-color:cornflowerblue;'
+                'background-color:cornflowerblue;';
+        } else if(msg.contains('white')) {
+            document.getElementById('messages').style =
+                'background-color:white;';
         }
         
-        //Special character sequences (smileys)
-        msg = msg.replace(':)', '<img src="img/Happyface.jpg">');
         
-        //Hyperlinks
-        msg = msg.replace(/<<(.+)>>\[(.+)\]/, '<a href="$2">$1</a>');     //first
-        msg = msg.replace(/<<(.+)>>/, '<a href="$1">$1</a>');             //second
+        //Special character sequences (smileys)
+        msg = msg.replace(/:\)/g, '<img src="img/Happyface.jpg">');
+        
+        //Hyperlinks (in order, to preserve integrity)
+        // These work in Console, but not on the page! ??
+        msg = msg.replace(/<<([^<>]+)>>\[([^\[\]]+)\]/g, '<a href="$2">$1</a>');
+        msg = msg.replace(/<<([^<>]+)>>/g, '<a href="$1">$1</a>');
         
         //Web images
-        msg = msg.replace(/\[(.+)\]/, '<img src="$1">');                //third
+        msg = msg.replace(/\[([\[\]]+)\]/g, '<img src="$1">');
         return msg;
     }
 

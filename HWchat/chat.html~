@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <script src="http://127.0.0.1:10001/socket.io/socket.io.js"></script>
+        <script src="http://192.168.1.168:10001/socket.io/socket.io.js"></script>
         <script src='chat-client.js'></script>
         <link rel='stylesheet' href='chat.css' />
     </head>
