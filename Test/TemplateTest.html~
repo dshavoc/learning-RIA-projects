@@ -2,16 +2,33 @@
 
 <html>
     <head>
-        <script src="TemplateTest.js"></script>
+        <script src="http://localhost:10002/socket.io/socket.io.js"></script>
+        <script src="cardclient.js"></script>
         <link rel="stylesheet" href="cards.css" />
         <title>Deck of Cards</title>
     </head>
 
     <body>
-    <div class='card'>
-        <p class='card-title'>${title}</p>
-        <p class='card-class'>${class}</p>
-        <img class='card-image' src='test.png'>
-    </div>
+    <p id='status'></p>
+        <div id='main'>
+            <form id='loginForm'>
+                <fieldset>
+                    <legend id='legend'>Login</legend>
+                    <label for='username'>Username:</label>
+                    <input type='text' name='username' id='username' />
+                    <button id='login'>Log In</button>
+                    <button id='loginDM'>Log In as DM</button>
+                </fieldset>
+            </form>
+            <section id='cardBoard' class='hidden cardBoard'>
+
+            </section>
+            <section class='hidden chatRoom' id='chatRoom'>
+                <textarea id='message'></textarea>
+                <button type='button' id='send'>Send</button>
+                <br>
+                <div id='messages' class='chatWindow'></div>
+            </section>
+        </div>
     </body>
 </html>

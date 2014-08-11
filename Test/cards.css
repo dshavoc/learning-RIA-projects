@@ -10,37 +10,75 @@ body * {
     opacity:1;
 }
 
+.hidden {
+    display:none;
+}
+
+.cardBoard {
+    height:300px;
+    background-color: lightgray;
+    padding: 3px;
+}
+
+.chatWindow {
+    height:240px;
+    overflow:scroll;
+    background-color: lightyellow;
+}
+
 div.card {
-    width:250px;
-    height:400px;
+    width:120px;
+    height:200px;
     border-radius:10px;
-    background-color:brown;
+    background-color:tan;
     border: 2px solid black;
+    margin-left: 2px;
+    float:left;
+    font-size: 11px;
 }
 
 .card-title {
-    position: static;
-    left: 5%;
-    top: 0px;
-    width: 88%;
-    height: 20px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    left: 24px;
+    width: 90px;
+    height: 14px;
     border: 2px solid black;
     border-radius: 10px;
     text-align:center;
 }
 
 .card-class {
+    margin-top: 2px;
+    margin-bottom: 2px;
     left: 5%;
     top: 0px;
     width: 88%;
-    height: 20px;
+    height: 14px;
     border: 2px solid black;
     border-radius: 10px;
     text-align:center;
+    z-index: 2;
+}
+
+.card-number {
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    top: 0px;
+    left: 0px;
+    margin-top: 0px;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    text-align:center;
+    border: 2px solid black;
+    font-size: 12px;
+    z-index: 3;
 }
 
 .card-image {
-    top:0px;
-    width:100%;
-    
+    left: 2%;
+    top: 20px;
+    width:96%;
+    z-index: 1;
 }

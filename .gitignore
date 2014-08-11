@@ -1,0 +1,2 @@
+#Exclude any file ending in '~', in any directory
+**/*~
