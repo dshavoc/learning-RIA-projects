@@ -1,0 +1,9 @@
+Typical use case:
+
+Only header loads.
+User enters their name and clicks one of the Login buttons
+    Signal 'login'
+        triggered by header.js
+        serviced by chat.js
+        serviced by app.data.js
+        

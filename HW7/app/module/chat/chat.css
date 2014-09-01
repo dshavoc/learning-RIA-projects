@@ -1,0 +1,25 @@
+/*
+    CSS for the chat module.
+    Do not leave file empty.
+*/
+.chatPane {
+    float: left;
+    width: 200px;
+    height: 500px;
+    background-color: peachpuff;
+    border-radius: 4px;
+}
+
+.chatLobby {
+    overflow:scroll;
+    height:120px;
+}
+
+.chatInput {
+    width:100%;
+}
+
+.chatText {
+    overflow:scroll;
+    height:330px;
+}
