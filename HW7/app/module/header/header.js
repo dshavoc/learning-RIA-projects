@@ -10,7 +10,7 @@
                 'click',
                 function(e) {
                     e.preventDefault();
-                    app.trigger('login');
+                    app.trigger('login');   //TODO: pass the login data with this call
                     //setupBoard();
                 }
             );

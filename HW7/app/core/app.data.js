@@ -77,7 +77,7 @@ function serverListener() {
    
     socket.on('userlist', function(lst) {
         console.log('app.data.js: Received user list from server');
-        userlist = data;
+        userlist = lst;
         app.trigger('updateUserList');  //app.trigger seems not to work here.
     });
 
@@ -105,6 +105,7 @@ function sysChat(msg) {
     console.log('sysChat: ' + msg);
 }
 
+//app.data.card2html = function card2html(index) {
 function card2html(index) {
     var cardHtml = cardTemplate;
     cardHtml = cardHtml.replace(/\${title}/, deck.cards[index].title);
