@@ -11,11 +11,12 @@
                 //Capture chat input. If Enter key detected, send message.
                 document.getElementById('chatInput').addEventListener(
                     'keypress',
-                    function(key) {
-                        if(key.charCode == 13) {
-                            //Enter key pressed
-                            sendChatMessage();
-                        }
+                    function(e) {
+                        if(e.charCode != 13)
+                            return;
+                        //Enter key pressed
+                        e.preventDefault();   //Preclude the terminal newline
+                        sendChatMessage();
                     }
                 );
             });
@@ -50,7 +51,6 @@
                 }
             );
             document.getElementById('chatInput').value='';
-                //Bug: The enter key adds a char(13) AFTER the text is cleared ...
         }
         
         exports(moduleName,render);    

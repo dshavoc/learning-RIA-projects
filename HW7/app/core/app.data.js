@@ -8,6 +8,21 @@ var socket,
     deck,           //JSON Object
     DMkey;
     
+app.data.config = {
+    hostAddr: 'http://' + document.location.hostname + ':10002',
+    socketIoHost: 'http://' + document.location.hostname + ':10002/socket.io/socket.io.js'
+}
+
+
+function connectSocketIO() {
+    //Inject socket.io into the html
+    var socketIoElement = document.createElement('script');
+    socketIoElement.src = app.data.config.socketIoHost;
+    document.head.appendChild(socketIoElement);
+    console.log('Injected socket io source');
+}
+connectSocketIO();
+
 function setupBoard() {
     document.getElementById('cardBoard').innerHTML += card2html(0);
     document.getElementById('cardBoard').innerHTML += card2html(0);
@@ -18,7 +33,7 @@ app.on('login', function() {
     console.log('app.data.js: login event detected');
     //Check node server is serving socket.io, and connect
     if(io) {
-        socket = io.connect('http://localhost:10002');
+        socket = io.connect(app.data.config.hostAddr); //'http://' + document.location.hostname + ':10002');
         console.log('Socket connected');
     }
     else {
