@@ -16,16 +16,16 @@
                             return;
                         //Enter key pressed
                         e.preventDefault();   //Preclude the terminal newline
-                        sendChatMessage();
+                        parseInput();
                     }
                 );
             });
             
             app.on('updateUserList', function(e) {
                 //userlist data has been stored in app.data.js. Need only update UI.
-                var listHTML;
+                var listHTML = '';
                 for(var i=0; i<userlist.length; i++) {
-                    listHTML += '<p>' + userlist[i] + '</p>';
+                    listHTML += userlist[i] + '<br>';
                 }
                 document.getElementById('chatLobby').innerHTML = listHTML;
                 console.log('chat.js: User list updated', e);
@@ -34,23 +34,35 @@
             console.log('chat.js app event listeners defined');
         }
         
+        //Frequent
+        function parseInput() {
+            //Get user input and clear the input area
+            var t = document.getElementById('chatInput').value
+            var tu = t.toUpperCase();
+            document.getElementById('chatInput').value='';
+            
+            if(tu.indexOf('SAY ')==0)
+                sendChatMessage(t.substr(4));
+
+            var move = tu.match(/^GO\s+([NESWUD])/); //"GO NORTH" -> ["GO N", "N"]
+            console.log('move:', move);
+            if(move) {
+                app.trigger('move', move[1]);
+            }
+        }
+        
         //Frequent use, so declare in outer scope to dedicate the memory
-        function sendChatMessage() {
+        function sendChatMessage(m) {
             console.log('message transmitted');
-            document.getElementById('chatInput').value=
-                document.getElementById('chatInput').value.replace(
-                    /[\n\r]/ig,
-                    '<br>'
-                );
+            m=m.replace(/[\n\r]/ig,'<br>');
 
             socket.emit(
                 'chat',
                 {
                     username: username,
-                    msg: document.getElementById('chatInput').value
+                    msg: m
                 }
             );
-            document.getElementById('chatInput').value='';
         }
         
         exports(moduleName,render);    

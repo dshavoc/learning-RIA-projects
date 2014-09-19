@@ -1,0 +1,12 @@
+/*
+    CSS for the board module.
+    Do not leave file empty.
+*/
+.boardPane {
+    float: left;
+    width: 600px;
+    height: 500px;
+    background-color: lightgray;
+    border-radius: 4px;
+    overflow: scroll;
+}

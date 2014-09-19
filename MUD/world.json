@@ -1,0 +1,17 @@
+[
+    {
+        "desc": "the side entrance lobby",
+        "detail": "You see two printers on the North wall, and mailboxes on the South wall.",
+        "N": -1, "E": 1, "S": -1, "W": -1, "U": 2, "D": -1
+    },
+    {
+        "desc": "the company break room",
+        "detail": "There are two microwaves, a fridge, a sink, a public table, and a whiteboard with the joke of the day.",
+        "N": -1, "E": -1, "S": -1, "W": 0, "U": -1, "D": -1
+    },
+    {
+        "desc": "the upstairs R&D hallway",
+        "detail": "On the West wall of the hallway, there are the offices of Arup Roy and Rongching Dai, and mandatory employment-related legal posters. On the East wall, there are two bathroom doors, a door to a maintenance room, and a first aid kit.",
+        "N": -1, "E": -1, "S": -1, "W": -1, "U": -1, "D": 0
+    }
+]
