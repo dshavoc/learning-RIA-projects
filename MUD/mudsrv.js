@@ -1,11 +1,11 @@
 
 //Globals
-var worldData;      
-var DMkey = 'DM';   //preferably a random value. This value is given to the
-                    //DM, and the DM must respond to the server with this
-                    //to prove authority.
-var DMsocket;
-var DMusername;
+var world = {
+    data: '',
+    loadFile: 'world.json',
+    saveFile: 'worldSave.json'
+};
+
 var HOST_PORT = 8080;
 var SERV_PORT = 10002;
 var userlist = [];      //{name: 'Daniel', sock: socket}
@@ -24,15 +24,15 @@ console.log('HTTP hosted on port ' + HOST_PORT);
 //Read world data
 var fs = require('fs');
 fs.readFile(                //non-blocking
-    'world.json',
+    world.loadFile,
     function (err, data) {  //called after file has been completely read in
         if(err) throw err;
         
         try {
-            worldData = JSON.parse(data.toString());
+            world.data = JSON.parse(data.toString());
         }
         catch(e) {
-            console.log('error importing world data: ', e);
+            console.log('Error loading or JSON parsing world data: ', e);
             return;
         }
         console.log('Imported world data.');
@@ -51,13 +51,8 @@ io.sockets.on(
         socket.on(
             'disconnect',
             function() {
-                if(socket == DMsocket) {
-                    console.log('The DM has left!');
-                    io.emit('chat', {username: 'Sys', msg: 'The DM has left'});
-                }
-                else {
-                    console.log('A player has left.');
-                }
+                console.log('A player has left.');
+                removePlayer(socket);
             }
         );
             
@@ -79,8 +74,9 @@ io.sockets.on(
                 if(data.username) {
                     console.log('Detected requestParams, username supplied.');
                     socket.emit('params', {
-                        'worldData': worldData,
-                        'origin': 0
+                        'world.data': world.data,
+                        'origin': 0,
+                        'respawn': 1
                     });
                     if(userListAddNew(data.username, socket)) {
                         console.log('Registered player ' + data.username);
@@ -92,28 +88,20 @@ io.sockets.on(
                 }
             }
         );
+        
+        socket.on(
+            'linkNew',
+            function(data) {
+                if(linkToNewNode(data.from, data.to, data.dir)) {
+                    io.emit('params', {
+                        'world.data': world.data,
+                        'origin': 0,
+                        'respawn': 0
+                    });
+                }
+            }
+        );
        
-        
-        function userListAddNew(name, sock) {
-            var usrInList = false;
-            for(var i = 0; i<userlist.length; i++){
-                if(userlist[i].username == name) usrInList = true;
-            }
-            if(!usrInList) {
-                userlist[userlist.length] = {name: name, sock: sock};
-                return true;
-            }
-            else return false;
-        }
-        
-        function emitUserList() {
-            console.log('Sending userlist to all players');
-            var lst = [];
-            for(var i=0; i<userlist.length; i++) {
-                lst[i] = userlist[i].name
-            }
-            io.sockets.emit('userlist', lst);
-        }
     }    
 );
 
@@ -123,4 +111,86 @@ function cleanTransmission(data) {
     data = data.replace(/<script[^<]+>/ig, 'SCRIPT-TAG-BLOCKED');
     
     return data;
+}
+
+function removePlayer(sock) {
+    //console.log('leaving socket: ', sock);
+    for(var i = 0; i < userlist.length; i++) {
+        if(userlist[i].sock == sock) {
+            console.log('Removing player ' + userlist[i].name);
+            userlist.splice(i,1);   //Remove 1 element at i-th index
+            emitUserList();
+        }
+    }
+}
+
+function userListAddNew(name, sock) {
+    var usrInList = false;
+    for(var i = 0; i<userlist.length; i++){
+        if(userlist[i].username == name) usrInList = true;
+    }
+    if(!usrInList) {
+        userlist[userlist.length] = {name: name, sock: sock};
+        console.log('new user added to list');
+        return true;
+    }
+    else return false;
+}
+
+function emitUserList() {
+    console.log('Sending userlist to all players');
+    var lst = [];
+    for(var i=0; i<userlist.length; i++) {
+        lst[i] = userlist[i].name
+    }
+    io.sockets.emit('userlist', lst);
+}
+
+//
+// WORLD EDITING FUNCTIONS
+//
+
+//Returns the opposite direction: N-S, E-W, U-D
+function oppositeOf(dir) {
+    var op = "NEUSWD";
+    op[(op.indexOf(dir)+3)%6];
+}
+
+function linkToNewNode(fromNode, toDir) {
+    if(toDir.find(/^[NESWUD]/)<0) return false;
+    toDir = toDir[0];   //sanitize
+   
+    var toNode = world.data.length;
+    world.data[toNode] = {
+        desc: '',
+        detail: '',
+        N:-1,E:-1,S:-1,W:-1,U:-1,D:-1
+    }
+    linkBetween(fromNode, toNode, toDir, true);
+    return true;    
+}
+
+function createDesc(at, desc) {
+    if(world.data[at].desc) return false;
+    world.data[at].desc = desc;
+}
+
+function createDetail(at, det) {
+    if(world.data[at].detail) return false;
+    world.data[at].detail = det;
+}
+
+function linkBetween(from, to, dir, force) {
+    if(dir.find(/^[NESWUD]/)<0) return false;
+    dir = dir[0];   //sanitize
+    if(force || world.data[from][dir] == -1) {
+        world.data[from][dir]=to;
+        world.data[to][oppositeOf(dir)]=from;
+    }
+    return true;
+}
+
+function saveWorld() {
+    console.log('World is being saved to ' + world.saveFile);
+    //fs.writeFile()
 }

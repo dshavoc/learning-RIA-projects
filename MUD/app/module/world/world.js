@@ -50,10 +50,6 @@
             return desc;
         }
         
-        function buildRoomDetail(here) {
-            return app.data.world[here].detail;
-        }
-        
         exports(moduleName,render);    
     }
 )();

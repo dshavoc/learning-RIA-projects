@@ -77,11 +77,13 @@ function serverListener() {
     
     socket.on('params', function(params) {
         app.data.world = params.worldData;
-        app.data.here = params.origin;
-        console.log('Received world data...');
-        sysChat('Connection to server established. World data received.');
+        console.log('Received world data.');
+        sysChat('World data received');
 
-        app.trigger('renderHere', app.data.here);
+        if(params.respawn == 1 && app.data.here != params.origin) {
+            app.data.here = params.origin;
+            app.trigger('renderHere', app.data.here);
+        }
     });
    
     socket.on('userlist', function(lst) {
