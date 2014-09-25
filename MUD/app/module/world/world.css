@@ -10,3 +10,8 @@
     border-radius: 4px;
     overflow: scroll;
 }
+
+span.userName {
+    color: blueviolet;
+    font-weight: bold;
+}

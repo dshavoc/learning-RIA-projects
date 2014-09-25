@@ -1,14 +1,23 @@
 
 //Globals
 var world = {
-    data: '',
+    data: '',   //{desc: "a place", detail: "A complete visual sentence.", N:-1,E:2,S,W,U,D}
+    origin: 0,
     loadFile: 'world.json',
     saveFile: 'worldSave.json'
 };
 
 var HOST_PORT = 8080;
 var SERV_PORT = 10002;
-var userlist = [];      //{name: 'Daniel', sock: socket}
+var userlist = [];      //{name: 'Daniel', sock: socket, loc: 0}
+
+var dirNameMap = {  N:'north',
+                    E:'east',
+                    S:'south',
+                    W:'west',
+                    U:'up',
+                    D:'down'
+}
 
 //Launch http server host
 //(www.github.com/RIAevangelist/node-http-server)
@@ -36,6 +45,7 @@ fs.readFile(                //non-blocking
             return;
         }
         console.log('Imported world data.');
+        testWorldGen();
     }
 );
 
@@ -74,8 +84,8 @@ io.sockets.on(
                 if(data.username) {
                     console.log('Detected requestParams, username supplied.');
                     socket.emit('params', {
-                        'world.data': world.data,
-                        'origin': 0,
+                        'worldData': world.data,
+                        'origin': world.origin,
                         'respawn': 1
                     });
                     if(userListAddNew(data.username, socket)) {
@@ -89,21 +99,82 @@ io.sockets.on(
             }
         );
         
-        socket.on(
-            'linkNew',
-            function(data) {
-                if(linkToNewNode(data.from, data.to, data.dir)) {
-                    io.emit('params', {
-                        'world.data': world.data,
-                        'origin': 0,
-                        'respawn': 0
-                    });
+        socket.on('move', function(m) {
+            //m{from, to, dir}
+            //Identify which user moved, and notify other users that could see it.
+            //Player identified by socket.id moved.
+            //Players saw it if they are NOT this player, and they are either in m.from or m.to
+            var name = sockId2UsrName(socket.id);
+            for(var i = 0; i < userlist.length; i++) {
+                if(userlist[i].sock.id == socket.id) {
+                    //Move this player
+                    userlist[i].loc = m.to;
+                    var usrsHere = fgetUsrsHereNot(m.to,i); 
+                    if(!usrsHere) usrsHere = 'nobody else';
+                    sendWorldMessage(i, 'You see '+usrsHere+' in the room.');
+                }
+                else if (userlist[i].loc == m.from) {
+                    //Tell this player that the moving player exited
+                    sendWorldMessage(i, '<span class=userName>'+name+'</span> left '+dirNameMap[m.dir]+' toward '+world.data[m.to].desc+'.');
+                }
+                else if (userlist[i].loc == m.to) {
+                    //Tell this player that the moving player entered
+                    sendWorldMessage(i, '<span class=userName>'+name+'</span> came '+dirNameMap[oppositeOf(m.dir)]+' from '+world.data[m.to].desc+'.');
                 }
             }
+        });
+        
+        socket.on('linkNew', function(data) {
+            var newNode = linkToNewNode(data.from, data.dir);
+            if(newNode > -1) {
+                updateUserWorld(data.from);
+                updateUserWorld(newNode);
+            }
+        });
+        
+        socket.on('descHere',
+            function(data) {
+                createDesc(data.index, data.desc);
+                updateUserWorld(data.index);
+            }
         );
-       
+        
+        socket.on('detHere',
+            function(data) {
+                createDetail(data.index, data.det);
+                updateUserWorld(data.index);
+            }
+        );
     }    
 );
+
+//
+// USER INTERFACE FUNCTIONS
+//
+
+function sendWorldMessage(usrI, msg) {
+    userlist[usrI].sock.emit('worldMsg', msg);
+}
+
+//Returns a comma-separated list of users at here, with CSS styles
+function fgetUsrsHereNot(here, usrI) {
+    var usrs='';
+    for(var i=0;i<userlist.length;i++){
+        if(i!=usrI && userlist[i].loc==here) {
+            usrs += '<span class=userName>'+userlist[i].name+'</span>, ';
+        }
+    }
+    if(usrs) usrs.slice(0,-2);   //If non-empty list, cut trailing ', '
+    return usrs;
+}
+
+//Sends a packet to update the world at a single node
+function updateUserWorld(index) {
+    io.emit('modWorld', {
+        index: index,
+        data: world.data[index]
+    });
+}
 
 //Strip the data of any forbidden content, such as script tags, for security
 function cleanTransmission(data) {
@@ -113,10 +184,14 @@ function cleanTransmission(data) {
     return data;
 }
 
+//
+// USER LIST CONTROLS
+//
+
 function removePlayer(sock) {
-    //console.log('leaving socket: ', sock);
+    //console.log('leaving socket: ', sock.id);
     for(var i = 0; i < userlist.length; i++) {
-        if(userlist[i].sock == sock) {
+        if(userlist[i].sock.id == sock.id) {
             console.log('Removing player ' + userlist[i].name);
             userlist.splice(i,1);   //Remove 1 element at i-th index
             emitUserList();
@@ -130,7 +205,7 @@ function userListAddNew(name, sock) {
         if(userlist[i].username == name) usrInList = true;
     }
     if(!usrInList) {
-        userlist[userlist.length] = {name: name, sock: sock};
+        userlist[userlist.length] = {name: name, sock: sock, loc: world.origin};
         console.log('new user added to list');
         return true;
     }
@@ -141,9 +216,15 @@ function emitUserList() {
     console.log('Sending userlist to all players');
     var lst = [];
     for(var i=0; i<userlist.length; i++) {
-        lst[i] = userlist[i].name
+        lst[i] = userlist[i].name;
     }
     io.sockets.emit('userlist', lst);
+}
+
+function sockId2UsrName(sid) {
+    for(var i = 0; i < userlist.length; i++) {
+        if(userlist[i].sock.id == sid) return userlist[i].name;
+    }
 }
 
 //
@@ -153,11 +234,11 @@ function emitUserList() {
 //Returns the opposite direction: N-S, E-W, U-D
 function oppositeOf(dir) {
     var op = "NEUSWD";
-    op[(op.indexOf(dir)+3)%6];
+    return op[(op.indexOf(dir)+3)%6];
 }
 
 function linkToNewNode(fromNode, toDir) {
-    if(toDir.find(/^[NESWUD]/)<0) return false;
+    if(toDir.search(/^[NESWUD]/)<0) return false;
     toDir = toDir[0];   //sanitize
    
     var toNode = world.data.length;
@@ -165,9 +246,11 @@ function linkToNewNode(fromNode, toDir) {
         desc: '',
         detail: '',
         N:-1,E:-1,S:-1,W:-1,U:-1,D:-1
-    }
+    };
+    console.log('New node '+toNode+' created. Linking now...');
     linkBetween(fromNode, toNode, toDir, true);
-    return true;    
+    //saveWorld();
+    return toNode;    
 }
 
 function createDesc(at, desc) {
@@ -176,21 +259,43 @@ function createDesc(at, desc) {
 }
 
 function createDetail(at, det) {
-    if(world.data[at].detail) return false;
+    if(world.data[at].detail) {
+        console.log('Detail already exists at node '+at+'!');
+        return false;
+    }
+    console.log('Added detail to node '+at);
     world.data[at].detail = det;
 }
 
 function linkBetween(from, to, dir, force) {
-    if(dir.find(/^[NESWUD]/)<0) return false;
+    if(dir.search(/^[NESWUD]/)<0) return false;
     dir = dir[0];   //sanitize
     if(force || world.data[from][dir] == -1) {
         world.data[from][dir]=to;
         world.data[to][oppositeOf(dir)]=from;
+        console.log('Node '+from+' linked to node '+to+' in '+dir+' direction');
     }
     return true;
 }
 
 function saveWorld() {
-    console.log('World is being saved to ' + world.saveFile);
-    //fs.writeFile()
+    fs.writeFile(world.saveFile, JSON.stringify(world.data), function (err) {
+        if (err) throw err;
+        console.log('World saved to ' + world.saveFile);
+    });
+}
+
+function testWorldGen() {
+    console.log('Running procedural world editing functions ...');
+    
+    //Testing linkBetween... WORKS
+    //linkBetween(0,1,'W',0);
+    
+    //Testing linkToNewNode... WORKS
+    var newNode = linkToNewNode(1, 'D');
+    createDesc(newNode, 'a secret pantry');
+    createDetail(newNode, 'There are honey pots lining the musty walls. Some of them are cracked, empty, and abandoned, but some appear to hold promise still.');
+    
+    //Testing saveWorld()... WORKS, but output is on one line human readable. I could use .replace to add CR after desc, detail, D.
+    saveWorld();
 }

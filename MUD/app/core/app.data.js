@@ -77,10 +77,10 @@ function serverListener() {
     
     socket.on('params', function(params) {
         app.data.world = params.worldData;
-        console.log('Received world data.');
+        console.log('Received world data: ', params.worldData);
         sysChat('World data received');
 
-        if(params.respawn == 1 && app.data.here != params.origin) {
+        if(params.respawn == 1) {
             app.data.here = params.origin;
             app.trigger('renderHere', app.data.here);
         }
@@ -91,12 +91,22 @@ function serverListener() {
         userlist = lst;
         app.trigger('updateUserList');
     });
+    
+    socket.on('modWorld', function(mod) {
+       app.data.world[mod.index] = mod.data;
+       //app.data.world[mod.index1] = mod.data1;
+       sysChat('World node '+mod.index+' updated');
+       app.trigger('renderHere');
+    });
 
+    socket.on('worldMsg', function(msg) {
+        app.trigger('worldMsg', msg);
+    });
 }
 
 function sysChat(msg) {
     document.getElementById('chatText').innerHTML =
-        "<b>" + msg + "</b><br>" + document.getElementById('chatText').innerHTML;
+        "<code>" + msg + "</code><br>" + document.getElementById('chatText').innerHTML;
     console.log('sysChat: ' + msg);
 }
 
