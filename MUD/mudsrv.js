@@ -119,7 +119,7 @@ io.sockets.on(
                 }
                 else if (userlist[i].loc == m.to) {
                     //Tell this player that the moving player entered
-                    sendWorldMessage(i, '<span class=userName>'+name+'</span> came '+dirNameMap[oppositeOf(m.dir)]+' from '+world.data[m.to].desc+'.');
+                    sendWorldMessage(i, '<span class=userName>'+name+'</span> came '+dirNameMap[m.dir]+' from '+world.data[m.from].desc+'.');
                 }
             }
         });
