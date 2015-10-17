@@ -17,7 +17,7 @@ window.onload = function() {	//waits for entire code to be downloaded
                 return;
             }
             else {
-                socket = io.connect('http://192.168.1.101:10001');
+                socket = io.connect('http://localhost:10001');
             }
             
             //Check for socket connection
@@ -26,9 +26,11 @@ window.onload = function() {	//waits for entire code to be downloaded
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('chatRoom').classList.remove('hidden');
 	
+                console.log('socket connected. setting up listener');
                 serverListener();
             }
             else {
+                console.log('failed to connect socket');
                 document.getElementById('legend').innerHTML =
                     'Login - SOCKET CONNECTION REJECTED';
             }
@@ -39,9 +41,11 @@ window.onload = function() {	//waits for entire code to be downloaded
 function serverListener() {
 
     socket.on(
-        'chat',
+        'message',
         function(data) {
-            var msg = decode(data.msg);
+            console.log('chat data rx:');
+            console.log(data);
+            var msg = decode(data.message);
 
             if(data.username == lastSpeaker) {
                 msg = ' : ' + msg;
