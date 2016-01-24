@@ -21,7 +21,7 @@ var dirNameMap = {  N:'north',
 
 //Launch http server host
 //(www.github.com/RIAevangelist/node-http-server)
-var server=require('./http.js');
+var server=require('./node_modules/node-http-server/server/http.js');
 server.deploy(
     {
         port: HOST_PORT,
